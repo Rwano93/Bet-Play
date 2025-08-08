@@ -37,11 +37,12 @@ final class UserService: ObservableObject {
         d.set(balance,   forKey: "balance")
     }
 
+    /// IMPORTANT : pendant le dev on n’auto-connecte PAS → on force l’écran Login
     func restore() {
         let d = UserDefaults.standard
-        isLoggedIn = d.bool(forKey: "isLoggedIn")
         username   = d.string(forKey: "username") ?? ""
         avatar     = d.string(forKey: "avatar") ?? "person.circle"
         balance    = d.integer(forKey: "balance")
+        isLoggedIn = false  // <-- on ne saute plus la connexion
     }
 }

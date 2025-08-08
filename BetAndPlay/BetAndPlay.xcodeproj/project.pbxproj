@@ -29,9 +29,22 @@
 		9196D00B2E45606100C760BB /* BetAndPlayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetAndPlayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9196D1102E458AD100C760BB /* Exceptions for "BetAndPlay" folder in "BetAndPlay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				UI/Components/Untitled.swift,
+			);
+			target = 9196CFF02E45606000C760BB /* BetAndPlay */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9196CFF32E45606000C760BB /* BetAndPlay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9196D1102E458AD100C760BB /* Exceptions for "BetAndPlay" folder in "BetAndPlay" target */,
+			);
 			path = BetAndPlay;
 			sourceTree = "<group>";
 		};
