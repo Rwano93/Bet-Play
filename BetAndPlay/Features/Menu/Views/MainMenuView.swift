@@ -1,13 +1,10 @@
 import SwiftUI
-
 struct MainMenuView: View {
     @EnvironmentObject var wallet: WalletService
     @EnvironmentObject var user: UserService
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Profil
                 HStack {
                     Image(user.avatar)
                         .resizable()
@@ -19,40 +16,36 @@ struct MainMenuView: View {
                             .font(.headline)
                             .foregroundColor(.white)
                         Text("Solde: \(wallet.balance) €")
-                            .foregroundColor(.yellow)
+                            .foregroundColor(.gold)
                     }
                     Spacer()
                 }
                 .padding()
-                
-                // Boutons des jeux
-                gameButton(title: "Blackjack", imageName: "blackjack")
-                gameButton(title: "Baccarat", imageName: "baccarat")
-                gameButton(title: "Roulette", imageName: "roulette")
+                gameTile(title: "Blackjack", image: "blackjack")
+                gameTile(title: "Baccarat", image: "baccarat")
+                gameTile(title: "Roulette", image: "roulette")
             }
             .padding()
         }
         .background(Color.black.ignoresSafeArea())
     }
-    
-    private func gameButton(title: String, imageName: String) -> some View {
+    private func gameTile(title: String, image: String) -> some View {
         Button {
-            print("Jouer à \(title)")
+            print("Ouvrir \(title)")
         } label: {
             VStack {
-                Image(imageName)
+                Image(image)
                     .resizable()
                     .scaledToFit()
                     .frame(height: 100)
-                    .shadow(radius: 5)
                 Text(title)
-                    .font(.title3)
                     .foregroundColor(.white)
+                    .font(.headline)
             }
             .padding()
-            .background(Color.green.opacity(0.7))
+            .background(Color.casinoGreen)
             .cornerRadius(15)
-            .shadow(color: .black.opacity(0.5), radius: 8)
+            .shadow(radius: 5)
         }
     }
 }

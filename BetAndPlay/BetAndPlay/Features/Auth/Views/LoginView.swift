@@ -2,59 +2,71 @@ import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var user: UserService
-    @State private var name = ""
-    @State private var selectedAvatar = "avatar1"
-    
-    let avatars = ["avatar1", "avatar2", "avatar3"]
-    
+    @EnvironmentObject var viewRouter: ViewRouter
+
+    @State private var email = ""
+    @State private var password = ""
+
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Bet&Play")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.yellow)
-            
-            TextField("Entrez votre pseudo", text: $name)
-                .padding()
-                .background(Color.white.opacity(0.2))
-                .cornerRadius(10)
-                .foregroundColor(.white)
-            
-            Text("Choisissez votre avatar")
-                .foregroundColor(.white)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(avatars, id: \.self) { avatar in
-                        Image(avatar)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(selectedAvatar == avatar ? Color.yellow : Color.clear, lineWidth: 3)
-                            )
-                            .onTapGesture {
-                                selectedAvatar = avatar
-                            }
-                    }
+        ZStack {
+            LinearGradient(colors: [Color.black, Color.red.opacity(0.85)],
+                           startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+
+            VStack(spacing: 22) {
+                Spacer(minLength: 40)
+                Text("Connexion")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(.white)
+
+                VStack(spacing: 14) {
+                    TextField("Email", text: $email)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.emailAddress)
+                        .padding()
+                        .background(.white.opacity(0.15))
+                        .cornerRadius(12)
+                        .foregroundStyle(.white)
+
+                    SecureField("Mot de passe", text: $password)
+                        .padding()
+                        .background(.white.opacity(0.15))
+                        .cornerRadius(12)
+                        .foregroundStyle(.white)
                 }
-            }
-            
-            Button(action: {
-                guard !name.isEmpty else { return }
-                user.login(name: name, avatar: selectedAvatar)
-            }) {
-                Text("Entrer dans le casino")
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.yellow)
-                    .cornerRadius(10)
+                .padding(.horizontal)
+
+                Button {
+                    user.login(email: email, password: password)
+                    withAnimation(.easeInOut) { viewRouter.currentPage = "menu" }
+                } label: {
+                    Text("Se connecter")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Color.yellow)
+                        .foregroundStyle(.black)
+                        .cornerRadius(14)
+                        .shadow(radius: 6)
+                }
+                .padding(.horizontal)
+
+                Button {
+                    user.demoLogin()
+                    withAnimation(.easeInOut) { viewRouter.currentPage = "menu" }
+                } label: {
+                    Text("Passer (mode démo)")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.white.opacity(0.15))
+                        .foregroundStyle(.white)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal)
+
+                Spacer()
             }
         }
-        .padding()
-        .background(Color.black.ignoresSafeArea())
+        .transition(.move(edge: .trailing).combined(with: .opacity))
     }
 }

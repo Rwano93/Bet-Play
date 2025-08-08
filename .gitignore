@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Xcode bruit
+**/xcuserdata/
+**/*.xcuserstate
+DerivedData/
