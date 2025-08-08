@@ -2,9 +2,11 @@ import SwiftUI
 
 @main
 struct BetAndPlayApp: App {
+
     @StateObject private var wallet = WalletService(startingBalance: 1000)
     @StateObject private var user = UserService()
     
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {
