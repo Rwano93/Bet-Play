@@ -9,9 +9,14 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color.black, Color.red.opacity(0.85)],
-                           startPoint: .top, endPoint: .bottom)
+            // 🔴 Image casino en arrière-plan
+            Image("CasinoBackground")
+                .resizable()
+                .scaledToFill()
                 .ignoresSafeArea()
+
+            // léger assombrissement pour la lisibilité
+            Color.black.opacity(0.35).ignoresSafeArea()
 
             VStack(spacing: 22) {
                 Spacer(minLength: 40)

@@ -12,7 +12,7 @@ struct BetAndPlayApp: App {
                 .environmentObject(wallet)
                 .environmentObject(user)
                 .environmentObject(viewRouter)
-                .onAppear { user.restore() }
+                .onAppear { user.restore() } // n’auto-connecte plus (voir UserService)
         }
     }
 }
