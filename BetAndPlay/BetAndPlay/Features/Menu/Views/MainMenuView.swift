@@ -1,86 +1,68 @@
+// BetAndPlay/BetAndPlay/Features/Menu/Views/MainMenuView.swift
 import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var user: UserService
     @EnvironmentObject var viewRouter: ViewRouter
 
-    let columns = [GridItem(.flexible(), spacing: 16),
-                   GridItem(.flexible(), spacing: 16)]
+    let games: [Game] = [
+        .init(title: "Blackjack",
+              subtitle: "Atteins 21 sans dépasser. Joue contre le croupier.",
+              imageName: "blackjack",
+              rules: "Le Blackjack est un jeu de cartes..."),
+        .init(title: "Baccarat",
+              subtitle: "Parie sur Joueur, Banquier ou Égalité.",
+              imageName: "baccarat",
+              rules: "Le Baccarat se joue en misant..."),
+        .init(title: "Roulette",
+              subtitle: "Mise sur un numéro, une couleur ou une combinaison.",
+              imageName: "roulette",
+              rules: "La Roulette consiste à miser..."),
+        .init(title: "À venir",
+              subtitle: "Nouveaux jeux bientôt disponibles.",
+              imageName: "comingsoon",
+              rules: "Bientôt.")
+    ]
 
     var body: some View {
-        ZStack {
-            // ✅ même fond pour cohérence
-            CasinoBackgroundView(dim: 0.55, gradient: true)
+        GeometryReader { geo in
+            let s = UISizing.scale(geo.size.width)
+            ZStack {
+                CasinoBackgroundView(dim: 0.5)
 
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Top bar
-                    HStack(spacing: 14) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "person.circle.fill")
-                                .font(.system(size: 40))
-                                .foregroundStyle(.yellow)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(user.username.isEmpty ? "Guest" : user.username)
-                                    .foregroundStyle(.white)
-                                    .font(.headline)
-                                Text("Solde: \(user.balance) €")
-                                    .foregroundStyle(.yellow)
-                                    .font(.subheadline)
-                            }
-                        }
-                        Spacer()
-                        Button {
-                            user.logout()
-                            withAnimation(.easeInOut) { viewRouter.currentPage = "login" }
-                        } label: {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
-                                .foregroundStyle(.white)
-                                .padding(10)
-                                .background(.white.opacity(0.12))
-                                .clipShape(Circle())
+                VStack(spacing: 18*s) {
+                    TopBar(
+                        username: user.username,
+                        avatarImageName: user.avatar,
+                        balanceText: "Solde: \(user.balance) €",
+                        onProfileTap: { withAnimation { viewRouter.currentPage = "profile" } }
+                    )
+                    .padding(.top, 6*s)
+
+                    TabView {
+                        ForEach(games) { game in
+                            GamePromoCard(
+                                title: game.title,
+                                subtitle: game.subtitle,
+                                imageName: game.imageName,
+                                onRulesTap: {
+                                    viewRouter.selectedGame = game
+                                    withAnimation { viewRouter.currentPage = "gameDetail" }
+                                },
+                                onPlayTap: {
+                                    print("\(game.title) lancé")
+                                }
+                            )
+                            .padding(.horizontal, 20*s)
                         }
                     }
-                    .padding(.horizontal)
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                    .frame(height: 230)
 
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        MenuCard(title: "Blackjack", icon: "suit.club.fill") { /* open */ }
-                        MenuCard(title: "Baccarat", icon: "suit.diamond.fill") { /* open */ }
-                        MenuCard(title: "Roulette",  icon: "circle.grid.cross") { /* open */ }
-                        MenuCard(title: "À venir",    icon: "sparkles") { }
-                    }
-                    .padding(.horizontal)
+                    Spacer()
                 }
-                .padding(.vertical, 24)
+                .padding(.bottom, 6*s)
             }
-        }
-        .transition(.opacity)
-    }
-}
-
-private struct MenuCard: View {
-    let title: String
-    let icon: String
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 12) {
-                Image(systemName: icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 56)
-                    .foregroundStyle(.yellow)
-                    .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
-                Text(title)
-                    .foregroundStyle(.white)
-                    .fontWeight(.semibold)
-            }
-            .frame(maxWidth: .infinity, minHeight: 140)
-            .padding()
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18).stroke(.white.opacity(0.12), lineWidth: 1))
-            .shadow(color: .black.opacity(0.35), radius: 10, y: 6)
         }
     }
 }
