@@ -3,20 +3,17 @@ import SwiftUI
 final class UserService: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var username: String = ""
-    @Published var avatar: String = "person.circle"
+    @Published var avatar: String = "avatar1" // image par défaut dans Assets
     @Published var balance: Int = 1000
 
     func login(email: String, password: String) {
         username = email.split(separator: "@").first.map(String.init) ?? "Joueur"
-        avatar = "person.circle"
         isLoggedIn = true
         save()
     }
 
     func demoLogin() {
         username = "Guest"
-        avatar = "person.circle"
-        balance = 1000
         isLoggedIn = true
         save()
     }
@@ -24,7 +21,7 @@ final class UserService: ObservableObject {
     func logout() {
         isLoggedIn = false
         username = ""
-        avatar = "person.circle"
+        avatar = "avatar1"
         balance = 0
         save()
     }
@@ -37,12 +34,11 @@ final class UserService: ObservableObject {
         d.set(balance,   forKey: "balance")
     }
 
-    /// IMPORTANT : pendant le dev on n’auto-connecte PAS → on force l’écran Login
     func restore() {
         let d = UserDefaults.standard
+        isLoggedIn = d.bool(forKey: "isLoggedIn")
         username   = d.string(forKey: "username") ?? ""
-        avatar     = d.string(forKey: "avatar") ?? "person.circle"
+        avatar     = d.string(forKey: "avatar") ?? "avatar1"
         balance    = d.integer(forKey: "balance")
-        isLoggedIn = false  // <-- on ne saute plus la connexion
     }
 }

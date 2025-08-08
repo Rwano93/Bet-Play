@@ -2,35 +2,41 @@ import SwiftUI
 
 @main
 struct BetAndPlayApp: App {
-    @StateObject var wallet = WalletService(startingBalance: 1000)
     @StateObject var user = UserService()
     @StateObject var viewRouter = ViewRouter()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(wallet)
                 .environmentObject(user)
                 .environmentObject(viewRouter)
-                .onAppear { user.restore() } // n’auto-connecte plus (voir UserService)
+                .onAppear { user.restore() }
         }
     }
 }
 
-private struct RootView: View {
-    @EnvironmentObject var viewRouter: ViewRouter
+struct RootView: View {
     @EnvironmentObject var user: UserService
+    @EnvironmentObject var viewRouter: ViewRouter
 
     var body: some View {
         Group {
-            switch user.isLoggedIn ? "menu" : viewRouter.currentPage {
-            case "splash": SplashView()
-            case "login":  LoginView()
-            case "menu":   MainMenuView()
-            default:       SplashView()
+            switch viewRouter.currentPage {
+            case "splash":
+                SplashView()
+            case "login":
+                LoginView()
+            case "menu":
+                MainMenuView()
+            case "profile":
+                ProfileView()
+            case "gameDetail":
+                GameDetailView()
+            default:
+                SplashView()
             }
         }
         .animation(.easeInOut, value: viewRouter.currentPage)
-        .transition(.move(edge: .trailing).combined(with: .opacity))
+        .transition(.opacity)
     }
 }
