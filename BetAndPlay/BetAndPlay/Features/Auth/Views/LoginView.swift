@@ -6,38 +6,55 @@ struct LoginView: View {
 
     @State private var email = ""
     @State private var password = ""
+    @State private var showPassword = false
 
     var body: some View {
         ZStack {
-            // 🔴 Image casino en arrière-plan
-            Image("CasinoBackground")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
+            // ✅ TON image de fond
+            CasinoBackgroundView(dim: 0.35, gradient: true)
 
-            // léger assombrissement pour la lisibilité
-            Color.black.opacity(0.35).ignoresSafeArea()
-
+            // Carte en verre
             VStack(spacing: 22) {
-                Spacer(minLength: 40)
                 Text("Connexion")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 34, weight: .heavy))
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 8, y: 2)
 
                 VStack(spacing: 14) {
-                    TextField("Email", text: $email)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.emailAddress)
-                        .padding()
-                        .background(.white.opacity(0.15))
-                        .cornerRadius(12)
+                    HStack(spacing: 12) {
+                        Image(systemName: "envelope.fill")
+                            .foregroundStyle(.yellow.opacity(0.9))
+                        TextField("Email", text: $email)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                            .foregroundStyle(.white)
+                    }
+                    .padding(14)
+                    .background(.white.opacity(0.12))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.20), lineWidth: 1))
+                    .cornerRadius(14)
+
+                    HStack(spacing: 12) {
+                        Image(systemName: "lock.fill")
+                            .foregroundStyle(.yellow.opacity(0.9))
+                        Group {
+                            if showPassword {
+                                TextField("Mot de passe", text: $password)
+                            } else {
+                                SecureField("Mot de passe", text: $password)
+                            }
+                        }
                         .foregroundStyle(.white)
 
-                    SecureField("Mot de passe", text: $password)
-                        .padding()
-                        .background(.white.opacity(0.15))
-                        .cornerRadius(12)
-                        .foregroundStyle(.white)
+                        Button { withAnimation { showPassword.toggle() } } label: {
+                            Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                    }
+                    .padding(14)
+                    .background(.white.opacity(0.12))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.20), lineWidth: 1))
+                    .cornerRadius(14)
                 }
                 .padding(.horizontal)
 
@@ -49,10 +66,10 @@ struct LoginView: View {
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .background(Color.yellow)
+                        .background(LinearGradient(colors: [.yellow, .orange], startPoint: .leading, endPoint: .trailing))
                         .foregroundStyle(.black)
-                        .cornerRadius(14)
-                        .shadow(radius: 6)
+                        .cornerRadius(16)
+                        .shadow(color: .yellow.opacity(0.5), radius: 10, y: 4)
                 }
                 .padding(.horizontal)
 
@@ -63,15 +80,23 @@ struct LoginView: View {
                     Text("Passer (mode démo)")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(Color.white.opacity(0.15))
+                        .background(Color.white.opacity(0.12))
+                        .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.18), lineWidth: 1))
                         .foregroundStyle(.white)
-                        .cornerRadius(12)
+                        .cornerRadius(14)
                 }
                 .padding(.horizontal)
-
-                Spacer()
             }
+            .padding(24)
+            .frame(maxWidth: 520)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .stroke(.white.opacity(0.12), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.4), radius: 18, y: 10)
+            .padding(.horizontal, 24)
         }
-        .transition(.move(edge: .trailing).combined(with: .opacity))
+        .transition(.opacity) // pas de slide qui dévoile un écran dessous
     }
 }
