@@ -1,32 +1,23 @@
-//
-//  BetAndPlayApp.swift
-//  BetAndPlay
-//
-//  Created by Erwan gueganic on 08/08/2025.
-//
-
 import SwiftUI
-import SwiftData
 
 @main
 struct BetAndPlayApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
+    @StateObject private var wallet = WalletService(startingBalance: 1000)
+    @StateObject private var user = UserService()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                if user.isLoggedIn {
+                    MainMenuView()
+                        .environmentObject(wallet)
+                        .environmentObject(user)
+                } else {
+                    LoginView()
+                        .environmentObject(wallet)
+                        .environmentObject(user)
+                }
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
